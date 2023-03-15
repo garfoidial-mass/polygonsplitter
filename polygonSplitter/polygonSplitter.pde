@@ -88,41 +88,27 @@ Vector2 findIntersection(Vector2 start1, Vector2 direction, Vector2 start2, Vect
 
 int countIntersections(ArrayList<Vector2> pointlist,Vector2 raystart, Vector2 raydir){
   int i = 0;
-  for(int x = 0; x < pointlist.size(); x++)
-  {
-    Vector2 startpoint = pointlist.get(x);
-    Vector2 endpoint;
-    if(x < pointlist.size()-1)
+  
+  for(int y = 0; y < pointlist.size(); y++)
     {
-      endpoint = pointlist.get(x+1);
-    }
-    else
-    {
-      endpoint = pointlist.get(0);
-    }
-    
-    Vector2 direction = new Vector2(endpoint.x-startpoint.x, endpoint.y-startpoint.y);
-    
-    for(int y = 0; y < pointlist.size(); y++)
-    {
-      Vector2 startpoint2 = pointlist.get(x);
+      Vector2 startpoint2 = pointlist.get(y);
       Vector2 endpoint2;
-      if(x < pointlist.size()-1)
+      if(y < pointlist.size()-1)
       {
-        endpoint2 = pointlist.get(x+1);
+        endpoint2 = pointlist.get(y+1);
       }
       else
       {
         endpoint2 = pointlist.get(0);
       }
-      Vector2 intersection = findIntersection(startpoint,direction,startpoint2,endpoint2);
+      Vector2 intersection = findIntersection(raystart,raydir,startpoint2,endpoint2);
       if(intersection.x != Float.NaN && intersection.y != Float.NaN)
       {
         i+=1;
       }
     }
-  }
-  return i; // did this so the ide wouldnt yell at me about it not returning a value
+    
+  return i;
 }
 
 void setup(){
@@ -143,13 +129,25 @@ void keyPressed(){
     background(255,255,255);
   }
   else if(key == 'a'){
-    for(int i = 0; i < points.size(); i++){
-      Vector2 point = points.get(i);
-      ellipse(point.x,point.y,10,10);
-      if(i>0){
-        line(point.x,point.y,points.get(i-1).x,points.get(i-1).y);
+    for(int i = 0; i < points.size(); i++)
+    {
+      Vector2 startpoint = points.get(i);
+      ellipse(startpoint.x,startpoint.y,10,10);
+      Vector2 endpoint;
+      if(i < points.size()-1)
+      {
+        line(startpoint.x,startpoint.y,points.get(i+1).x,points.get(i+1).y);
+        endpoint = points.get(i+1);
       }
+      else
+      {
+        endpoint = points.get(0);
+      }
+      
+      Vector2 direction = new Vector2(endpoint.x-startpoint.x, endpoint.y-startpoint.y);
+      
+      countIntersections(points, startpoint,direction);
     }
-    line(points.get(points.size()-1).x,points.get(points.size()-1).y, points.get(0).x,points.get(0).y);
   }
+  line(points.get(points.size()-1).x,points.get(points.size()-1).y, points.get(0).x,points.get(0).y);
 }

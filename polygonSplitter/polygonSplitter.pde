@@ -75,13 +75,10 @@ Vector2 findIntersection(Vector2 start1, Vector2 direction, Vector2 start2, Vect
   {
     if((direction.x > 0 && point.x > start1.x)||(direction.x < 0 && point.x < start1.x))
     {
-          if((direction.y > 0 && point.y > start1.y)||(direction.y < 0 && point.y < start1.y))
-          {
-            if(direction.y == 0 && point.y == start1.y)
-            {
-              return point;
-            }
-          }
+      if((direction.y > 0 && point.y > start1.y)||(direction.y < 0 && point.y < start1.y))
+      {
+        return point;
+      }
     }
   }
   
@@ -90,7 +87,41 @@ Vector2 findIntersection(Vector2 start1, Vector2 direction, Vector2 start2, Vect
 }
 
 int countIntersections(ArrayList<Vector2> pointlist,Vector2 raystart, Vector2 raydir){
-  int i =0;
+  int i = 0;
+  for(int x = 0; x < pointlist.size(); x++)
+  {
+    Vector2 startpoint = pointlist.get(x);
+    Vector2 endpoint;
+    if(x < pointlist.size()-1)
+    {
+      endpoint = pointlist.get(x+1);
+    }
+    else
+    {
+      endpoint = pointlist.get(0);
+    }
+    
+    Vector2 direction = new Vector2(endpoint.x-startpoint.x, endpoint.y-startpoint.y);
+    
+    for(int y = 0; y < pointlist.size(); y++)
+    {
+      Vector2 startpoint2 = pointlist.get(x);
+      Vector2 endpoint2;
+      if(x < pointlist.size()-1)
+      {
+        endpoint2 = pointlist.get(x+1);
+      }
+      else
+      {
+        endpoint2 = pointlist.get(0);
+      }
+      Vector2 intersection = findIntersection(startpoint,direction,startpoint2,endpoint2);
+      if(intersection.x != Float.NaN && intersection.y != Float.NaN)
+      {
+        i+=1;
+      }
+    }
+  }
   return i; // did this so the ide wouldnt yell at me about it not returning a value
 }
 

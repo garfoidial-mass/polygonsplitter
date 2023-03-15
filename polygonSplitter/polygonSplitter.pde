@@ -17,31 +17,46 @@ Vector2 findIntersection(Vector2 start1, Vector2 direction, Vector2 start2, Vect
   
   float slope1 = 0;
   float intercept1 = 0;
+  float a1 = 0;
+  float b1 = 0;
+  float c1 = 0;
   float slope2 = 0;
   float intercept2 = 0;
+  float a2 = 0;
+  float b2 = 0;
+  float c2 = 0;
+  
   if(direction.x != 0)
   {
      slope1 = direction.y/direction.x;
      intercept1 = start1.y-(slope1*start1.x);
-    //add code for handling vertical lines here (hi future self and mr. D :3)
+     
+     a1 = -slope1;
+     b1 = 1;
+     c1 = intercept1;
+  }
+  else
+  {
+    a1 = 1;
+    b1 = 0;
+    c1 = start1.x;
   }
   
   if(end2.x-start2.x != 0)
   {
-     slope2 = (end2.y-start2.y)/(end2.x-start2.x);
-     intercept2 = start2.y-(slope2*start2.x);
-    //add code for handling vertical lines here (hi future self and mr. D :3)
+   slope2 = (end2.y-start2.y)/(end2.x-start2.x);
+   intercept2 = start2.y-(slope2*start2.x);
+   
+   a2 = -slope2;
+   b2 = 1;
+   c2 = intercept2;
   }
-
-
-
-  float a1 = -slope1;
-  float b1 = 1;
-  float c1 = intercept1;
-
-  float a2 = -slope2;
-  float b2 = 1;
-  float c2 = intercept2;
+  else
+  {
+    a2 = 1;
+    b2 = 0;
+    c2 = start2.x;
+  }
 
   float determinant = (a1*b2)-(a2*b1);
   if(determinant == 0)
@@ -74,6 +89,11 @@ Vector2 findIntersection(Vector2 start1, Vector2 direction, Vector2 start2, Vect
   
 }
 
+int countIntersections(ArrayList<Vector2> pointlist,Vector2 raystart, Vector2 raydir){
+  int i =0;
+  return i; // did this so the ide wouldnt yell at me about it not returning a value
+}
+
 void setup(){
   size(640,480);
   fill(255);
@@ -98,7 +118,7 @@ void keyPressed(){
       if(i>0){
         line(point.x,point.y,points.get(i-1).x,points.get(i-1).y);
       }
-      line(points.get(points.size()-1).x,points.get(points.size()-1).y, points.get(0).x,points.get(0).y);
     }
+    line(points.get(points.size()-1).x,points.get(points.size()-1).y, points.get(0).x,points.get(0).y);
   }
 }

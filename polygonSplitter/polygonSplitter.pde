@@ -11,36 +11,60 @@ class Vector2{
 
 ArrayList<Vector2> points; 
 
-//based off of math from here: https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_line_equations
+//based off of pseudo code from here: https://www.geeksforgeeks.org/program-for-point-of-intersection-of-two-lines/
 Vector2 findIntersection(Vector2 start1, Vector2 direction, Vector2 start2, Vector2 end2){ 
   Vector2 point = new Vector2(0,0);
   
   float slope1 = 0;
   float intercept1 = 0;
-  
+  float a1 = 0;
+  float b1 = 0;
+  float c1 = 0;
   float slope2 = 0;
   float intercept2 = 0;
+  float a2 = 0;
+  float b2 = 0;
+  float c2 = 0;
   
   if(direction.x != 0)
   {
      slope1 = direction.y/direction.x;
      intercept1 = start1.y-(slope1*start1.x);
+     
+     a1 = -slope1;
+     b1 = 1;
+     c1 = intercept1;
   }
   else
   {
+    a1 = 1;
+    b1 = 0;
+    c1 = start1.x;
   }
   
   if(end2.x-start2.x != 0)
   {
    slope2 = (end2.y-start2.y)/(end2.x-start2.x);
    intercept2 = start2.y-(slope2*start2.x);
+   
+   a2 = -slope2;
+   b2 = 1;
+   c2 = intercept2;
   }
   else
   {
-    
+    a2 = 1;
+    b2 = 0;
+    c2 = start2.x;
   }
-  point.x = (intercept2-intercept1)/(slope1-slope2);
-  point.y = slope1*((intercept2-intercept1)/(slope1-slope2))+intercept1;
+
+  float determinant = (a1*b2)-(a2*b1);
+  if(determinant == 0)
+  {
+    return new Vector2(Float.NaN, Float.NaN);
+  }
+  point.x = ((c1*b2)-(c2*b1))/determinant;
+  point.y = ((a1*c2)-(a2*c1))/determinant;
   
   var maxX = max(start2.x,end2.x);
   var minX = min(start2.x,end2.x);
@@ -49,9 +73,9 @@ Vector2 findIntersection(Vector2 start1, Vector2 direction, Vector2 start2, Vect
   
   if(point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY)
   {
-    if((direction.x > 0 && point.x > start1.x)||(direction.x < 0 && point.x < start1.x)||(direction.x == 0 && point.x == start1.x))
+    if((direction.x > 0 && point.x > start1.x)||(direction.x < 0 && point.x < start1.x))
     {
-      if((direction.y > 0 && point.y > start1.y)||(direction.y < 0 && point.y < start1.y)||(direction.y == 0 && point.y == start1.y))
+      if((direction.y > 0 && point.y > start1.y)||(direction.y < 0 && point.y < start1.y))
       {
         return point;
       }
@@ -87,6 +111,33 @@ ArrayList<Vector2> countIntersections(ArrayList<Vector2> pointlist,Vector2 rayst
     }
     
   return intersections;
+}
+
+float distanceBetween(Vector2 a, Vector2 b){
+  float dx = abs(a.x-b.x);
+  float dy = abs(a.y-b.y);
+  float distance = sqrt((dx*dx)+(dy*dy));
+  return distance;
+}
+
+Vector2 nearestIntersection(Vector2 point, ArrayList<Vector2> intersections){
+  
+  if(intersections.size() <= 0)
+  {
+    return point;
+  }
+  Vector2 nearest = intersections.get(0);
+  
+  for(int i = 1; i < intersections.size(); i++)
+  {
+    Vector2 intersection = intersections.get(i);
+    float distance = distanceBetween(point,intersection);
+    if(distance < distanceBetween(point,nearest))
+    {
+      nearest = intersection;
+    }
+  }
+  return nearest;
 }
 
 void setup(){
@@ -126,6 +177,11 @@ void keyPressed(){
       Vector2 direction = new Vector2(endpoint.x-startpoint.x, endpoint.y-startpoint.y);
       
       ArrayList<Vector2> intersections = countIntersections(points, endpoint,direction);
+      Vector2 closest = nearestIntersection(endpoint,intersections);
+      if(intersections.size()%2!=0)
+      {
+        line(endpoint.x,endpoint.y,closest.x,closest.y);
+      }
       println("line ", i+1," has ", intersections.size(), " intersections." );
     }
   }

@@ -93,7 +93,7 @@ ArrayList<Vector2> countIntersections(ArrayList<Vector2> pointlist,Vector2 rayst
   for(int y = 0; y < pointlist.size(); y++)
     {
       Vector2 startpoint2 = pointlist.get(y);
-      Vector2 endpoint2;
+      Vector2 endpoint2; 
       if(y < pointlist.size()-1)
       {
         endpoint2 = pointlist.get(y+1);
@@ -143,6 +143,8 @@ Vector2 nearestIntersection(Vector2 point, ArrayList<Vector2> intersections){
 void setup(){
   size(640,480);
   fill(255);
+  textSize(20);
+  background(255,255,255);
   points = new ArrayList<Vector2>();
 }
 
@@ -163,7 +165,25 @@ void keyPressed(){
     {
       Vector2 startpoint = points.get(i);
       ellipse(startpoint.x,startpoint.y,10,10);
+      fill(168, 86, 50);
+      text(i,startpoint.x-10,startpoint.y-10);
+      fill(255);
+      if(i < points.size()-1)
+      {
+        line(startpoint.x,startpoint.y,points.get(i+1).x,points.get(i+1).y);
+      }
+    }
+    line(points.get(points.size()-1).x,points.get(points.size()-1).y, points.get(0).x,points.get(0).y);
+  }
+  else if(key=='s')
+  {
+    for(int i = 0; i < points.size(); i++)
+    {
+      Vector2 startpoint = points.get(i);
+      fill(255);
+      ellipse(startpoint.x,startpoint.y,10,10);
       Vector2 endpoint;
+      fill(0);
       if(i < points.size()-1)
       {
         line(startpoint.x,startpoint.y,points.get(i+1).x,points.get(i+1).y);
@@ -181,9 +201,13 @@ void keyPressed(){
       if(intersections.size()%2!=0)
       {
         line(endpoint.x,endpoint.y,closest.x,closest.y);
+        fill(255);
+        ellipse(closest.x,closest.y,10,10);
+        fill(0);
       }
       println("line ", i+1," has ", intersections.size(), " intersections." );
     }
+    line(points.get(points.size()-1).x,points.get(points.size()-1).y, points.get(0).x,points.get(0).y);
+    fill(255);
   }
-  line(points.get(points.size()-1).x,points.get(points.size()-1).y, points.get(0).x,points.get(0).y);
 }

@@ -62,14 +62,17 @@ class Ray implements ILine{
     return new StandardLine(a,b,c);
   }
   boolean possibleIntersection(Vector2 point){
-    if((direction.x > 0 && point.x > start.x)||(direction.x < 0 && point.x < start.x))
+    boolean xPossible = false;
+    boolean yPossible = false;
+    if((direction.x > 0 && point.x > start.x)||(direction.x < 0 && point.x < start.x)||(direction.x == 0 && point.x == start.x))
     {
-      if((direction.y > 0 && point.y > start.y)||(direction.y < 0 && point.y < start.y))
-      {
-        return true;
-      }
+      xPossible = true;
     }
-    return false;
+    if((direction.y > 0 && point.y > start.y)||(direction.y < 0 && point.y < start.y)||(direction.y == 0 && point.y == start.y))
+    {
+      yPossible = true;
+    }
+    return xPossible && yPossible;
   }
 }
 
@@ -251,10 +254,11 @@ void keyPressed(){
       ILine intersector = new Ray(line.end,direction);
       
       ArrayList<Vector2> intersections = countIntersections(new ArrayList<ILine>(lines), intersector); 
-      intersections.addAll(countIntersections(new ArrayList<ILine>(cutLines), intersector));
-      Vector2 closest = nearestIntersection(line.end,intersections);
+      ArrayList<Vector2> intersections2 = countIntersections(new ArrayList<ILine>(cutLines), intersector);
       if(intersections.size()%2!=0)
       {
+        intersections.addAll(intersections2);
+        Vector2 closest = nearestIntersection(line.end,intersections);
         cutLines.add(new Line(line.end,closest));
         line(line.end.x,line.end.y,closest.x,closest.y);
         fill(255);
